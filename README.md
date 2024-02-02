@@ -7,7 +7,7 @@
  (1)generate-raw-data.m : Generates raw dataset \
  (2)postprocess.m : Postprocesses raw dataset to create dataset that can be used to train and test a neural network \
  (3)do-ml.nb : Creates neural network, trains and tests it on the post-processed dataset \
- All the nbs are commented to help users easily follow the code. \
+ All the nbs are commented to help users easily follow the code. 
  
  
  
