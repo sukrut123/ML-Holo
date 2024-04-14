@@ -4,9 +4,9 @@
  
  There are four Mathematica files: \
  (1)generate-ini-conditions.m : Generates various initials conditions \
- (1)generate-raw-data.m : Generates raw dataset \
- (2)postprocess.m : Postprocesses raw dataset to create dataset that can be used to train and test a neural network \
- (3)do-ml.nb : Creates neural network, trains and tests it on the post-processed dataset \
+ (2)generate-raw-data.m : Generates raw dataset \
+ (3)postprocess.m : Postprocesses raw dataset to create dataset that can be used to train and test a neural network \
+ (4)do-ml.nb : Creates neural network, trains and tests it on the post-processed dataset \
  All the nbs are commented to help users easily follow the code. 
  
  
