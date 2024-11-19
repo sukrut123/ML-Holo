@@ -17,7 +17,7 @@ $MaxExtraPrecision=50;
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Einstein equations in Eddington-Finkelstein gauge*)*)*)
+(*(*(*(*(*Einstein equations in Eddington-Finkelstein gauge*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -61,7 +61,7 @@ Put[EE,"ee.dat"];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Coordinate transformation r-> z=1/r *)*)*)
+(*(*(*(*(*Coordinate transformation r-> z=1/r *)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -95,7 +95,7 @@ Put[EOMz,"eez.dat"];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Near boundary analysis*)*)*)
+(*(*(*(*(*Near boundary analysis*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -155,7 +155,7 @@ Put[nbSol//Simplify,datFile];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Transformation from EF  to FG coordinates*)*)*)
+(*(*(*(*(*Transformation from EF  to FG coordinates*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -278,7 +278,7 @@ Put[{Simplify[AFG[\[Rho],v]],Simplify[BFG[\[Rho],v]],Simplify[SFG[\[Rho],v]]},"f
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Holographic EMT*)*)*)
+(*(*(*(*(*Holographic EMT*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -332,7 +332,7 @@ Export["ward.dat","\!\(\*SubscriptBox[\(D\), \(\[Mu]\)]\)\!\(\*SuperscriptBox[\(
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Equations of motion in characteristic form*)*)*)
+(*(*(*(*(*Equations of motion in characteristic form*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -579,7 +579,7 @@ Export["chareqns.dat",solEEprint];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Removing singularities*)*)*)
+(*(*(*(*(*Removing singularities*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -717,7 +717,7 @@ Export["neweef.dat",newEEf];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Making equations numerical*)*)*)
+(*(*(*(*(*Making equations numerical*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -930,18 +930,10 @@ Export["vevdtnum.dat",VEVdtnum];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Initializing the Chebyshev grid and time stepping*)*)*)
+(*(*(*(*(*Initializing the Chebyshev grid and time stepping*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
-(* the function "initGrid" builds the Chebyshev grid and the spectral differentialization matrices DSpec and D2Spec *)
-(*initGrid[points_]:=(
-nz=points;
-z=N[Table[Cos[(r \[Pi])/(nz-1)],{r,0,nz-1}]];
-DSpec=Table[If[i\[Equal]nz&&j\[Equal]nz,-((2(nz-1)^2+1)/6),If[i\[Equal]1&&j\[Equal]1,(2(nz-1)^2+1)/6,If[i\[Equal]j,-z[[i]]/(2(1-z[[i]]^2)),(-1)^(i+j)/(z[[i]]-z[[j]])If[i\[Equal]1||i\[Equal]nz,2,1]/If[j\[Equal]1||j\[Equal]nz,2,1]]]],{i,nz},{j,nz}];
-z=z/2+1/2;
-DSpec*=2;
-D2Spec=DSpec.DSpec;z);*)
 initGrid[points_,zMin_,zMax_]:=(
 nz=points;
 z=SetPrecision[Table[(1/2)((zMax+zMin)+(zMax-zMin)*Cos[Pi*r/(nz-1)]),{r,0,nz-1}],15];
@@ -967,7 +959,7 @@ initGrid[npoints,zMin,zMax];
 tinitial=t=tini;
 nums=Table[0,{Length[funcs]},{3},{nz}];
 a3=a3ini;
-Bfini=Function[z,(profileB[z])(*(profileB[z]/z^4)*)(*/.replnum*)];
+Bfini=Function[z,(profileB[z])];
 nums[[nB,1]]=Bfini/@z;
 nums[[nB,1,-1]]=SeriesCoefficient[Series[Bfini[ztmp,tini],{ztmp,0,0}],0];
 Bdtlist=Sdotlist=a3dtlist=timelist=a3list=b3list=b3dtlist=constrlist=VEVlist=VEVdtlist=Alist=Blist=Slist={};
@@ -1038,7 +1030,7 @@ update[nB];
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Running*)*)*)
+(*(*(*(*(*Running*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
@@ -1048,7 +1040,6 @@ initGrid[nz,zMin,zMax]);
 
 
 (* ::Input::Initialization:: *)
-plotfunc[n_]:=Show[plj[numsstart[[n,1]]],pl[nums[[n,1]]],PlotLabel->funcsf[[n]],ImageSize->350,BaseStyle->20,AxesLabel->"z",PlotRange->{Min[numsstart[[n,1]]~Join~nums[[n,1]]],Max[numsstart[[n,1]]~Join~nums[[n,1]]]}];
 run[profile_,a3ini_,b0ini_,tini_,tend_,gridpoints_,zMin_,zMax_,name_]:=(session=name;
 init[profile,a3ini,b0ini,tini,gridpoints,zMin,zMax];
 (*dt=1/(25 nz^2)//N;*)
@@ -1060,27 +1051,25 @@ If[stepnumber==4,numsstart=nums];
 (*If[Mod[stepnumber,25]\[Equal]0,timeleft=ToString[(Round[(tend-tini)/dt]-stepnumber) ttotal/(stepnumber)//Round]<>" seconds left." ;];*)
 (*If[Mod[stepnumber,1000]\[Equal]0,Print[{stepnumber,t,ttotal,mcon,a3,b3}];
 (*saverun[name<>".dat"];*)];*)
-If[Max[Abs[nums[[nB,1]]]]>10^4||(mcon[[2]]>5),(*Throw[Null];*)Goto[next];];,{stepnumber,Round[(tend-tini)/dt]}];(*,{t,mcon(*,timeleft*)(*,plots*)}];*)
+If[Max[Abs[nums[[nB,1]]]]>10^4||(mcon[[2]]>5),(*Throw[Null];*)Goto[next];];,{stepnumber,Round[(tend-tini)/dt]}];(*,{t,mcon(*,timeleft*)}];*)
 saverun[name<>".dat"];
 );
 
 
 (* ::Section::Initialization::Closed:: *)
-(*(*(*Run the simulation*)*)*)
+(*(*(*(*(*Run the simulation*)*)*)*)*)
 
 
 (* ::Input::Initialization:: *)
-(*SetDirectory[NotebookDirectory[]];*)
 randomtable1=ToExpression[Import["randomnumbers1.dat","TSV"]]//Flatten;
 randomtable2=ToExpression[Import["randomnumbers2.dat","TSV"]]//Flatten;
 randomtable3=ToExpression[Import["randomnumbers3.dat","TSV"]]//Flatten;
 
 
 (* ::Input::Initialization:: *)
-(*SetDirectory[NotebookDirectory[]];*)
 (* numerical parameters *)
 ClearAll[t,z];
-Btable=ToExpression[Import["Btable.dat","TSV"]];
+noisyBtable=ToExpression[Import["noisyBtable.dat","TSV"]];
 
 
 (* ::Input::Initialization:: *)
@@ -1090,7 +1079,7 @@ exprToFunction[expr_,vars_]:=ToExpression[ToString[FullForm[expr]/.MapIndexed[#1
 (* ::Input::Initialization:: *)
 (* numerical parameters *)
 ClearAll[t,z];
-tstart=0; tend=3;Ngrid=60;IntOrder=8;zMin=0;zMax=1.07`15;
+tstart=0; tend=3;Ngrid=60;IntOrder=8;zMin=0;zMax=1.1`15;
 (* initialconditions *)
 a3ini=-1;
 tot=1;
@@ -1102,8 +1091,7 @@ Do[
 (*Label[begin];*)
 ClearAll[t,z];
 a3now=a3ini;
-fileName="ml-test-datafile-"<>ToString[i];
-(*Print["profile"<>ToString[i]];*)
-run[exprToFunction[Btable[[i,1]],{z}],a3now,b0now[ti],tstart,tend,Ngrid,zMin,zMax,fileName];//Quiet;
+fileName="ml-raw-datafile-"<>ToString[i];
+run[exprToFunction[noisyBtable[[i,1]],{z}],a3now,b0now[ti],tstart,tend,Ngrid,zMin,zMax,fileName];//Quiet;
 Label[next];
-Clear[t];,{i,1,Length[Btable]}];
+Clear[t];,{i,1,Length[noisyBtable]}];
